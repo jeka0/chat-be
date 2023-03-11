@@ -12,9 +12,8 @@ async function login(data){
     const user = await userService.getUserByLogin(data.login);
 
     if(!user || !await compare(data.password, user.password)){   
-        throw new Error("Invalid email or password");
+        throw new Error("Invalid login or password");
     }
-    console.log(accessTokenSecret);
     const accessToken = jwt.createToken({ id: user.id }, accessTokenSecret, accessTokenLifetime);
     const refreshToken = jwt.createToken({ id: user.id }, refreshTokenSecret, refreshTokenLifetime);
 
@@ -25,7 +24,7 @@ async function register(data){
     const user = await userService.getUserByLogin(data.login);
     
     if(user){
-        throw new Error("This email is already in use by another account");
+        throw new Error("This login is already in use by another account");
     }
     
     await userService.createUser(data);

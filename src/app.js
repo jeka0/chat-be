@@ -12,7 +12,7 @@ const SOCKET_PORT = process.env.SOCKET_PORT;
 
 var app = express();
 
-app.use(cors({credentials: true, origin: '*'}));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 app.use('/api', router);
 app.use(errors());

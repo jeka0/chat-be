@@ -1,6 +1,12 @@
 var express = require('express');
 const server = require('http').createServer();
-const io = require('socket.io')(server);
+//const io = require('socket.io')(server);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ["GET", "POST"]
+  }
+});
 const router = require("./routes/router.js");
 const bodyParser = require('body-parser');
 const { AppDataSource } = require("./repositories/dbAccess.js")
@@ -18,9 +24,14 @@ app.use('/api', router);
 app.use(errors());
 
 io.on('connection', client => {
-  client.on('event', data => { /* … */ });
-  client.on('disconnect', () => { /* … */ });
+  console.log("user connected");
+
+  client.on("mess", mess =>{
+    console.log(mess);
+    io.emit("mess", mess);
+  });
 });
+
 
 AppDataSource.initialize().then(()=>{
   console.log("Database connected successfully");

@@ -1,12 +1,5 @@
 var express = require('express');
-const server = require('http').createServer();
-//const io = require('socket.io')(server);
-const io = require("socket.io")(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ["GET", "POST"]
-  }
-});
+const server = require('./additionalServers/socketServer');
 const router = require("./routes/router.js");
 const bodyParser = require('body-parser');
 const { AppDataSource } = require("./repositories/dbAccess.js")
@@ -23,19 +16,8 @@ app.use(bodyParser.json());
 app.use('/api', router);
 app.use(errors());
 
-io.on('connection', client => {
-  console.log("user connected");
-
-  client.on("mess", mess =>{
-    console.log(mess);
-    io.emit("mess", mess);
-  });
-});
-
-
 AppDataSource.initialize().then(()=>{
   console.log("Database connected successfully");
+  server.listen(SOCKET_PORT, ()=>console.log(`The socket server is running on a port ${SOCKET_PORT}...`));
   app.listen(SERVER_PORT,()=>console.log(`The server is running on a port ${SERVER_PORT}...`));
 }).catch((err)=>console.log("Database connection error (" + err + ")"));
-
-server.listen(SOCKET_PORT);

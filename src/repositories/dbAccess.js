@@ -9,7 +9,8 @@ const AppDataSource = new typeorm.DataSource({
     password : process.env.BD_PASSWORD,
     synchronize: false,
     entities: [
-        require("../entity/User.js")
+        require("../entity/User.js"),
+        require("../entity/Message.js")
     ],
     migrations: ["migration/**/*.js"],
     cli: {

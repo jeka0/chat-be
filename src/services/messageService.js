@@ -42,11 +42,12 @@ async function updateMessage(id, userId, data){
         throw new Error("Access denied");
     }
 
-    const updatedMessage = await messageAccess.updateMessage(id, data);
+    const updatedMessage = await messageAccess.updateMessage(messages, data);
 
     if(!updatedMessage){
         throw new Error("Error updating Message");
     }
+    deleteInfo(updatedMessage);
 
     return updatedMessage;
 }

@@ -16,10 +16,10 @@ async function getAllMessages(req, res){
 
 async function updateMessage(req, res){
     const { id } = req.params;
-    const { message, image } = req.body;
+    const { message } = req.body;
     const userId = req.userId;
 
-    messageSevice.updateMessage(id, userId, { message, image })
+    messageSevice.updateMessage(id, userId, { message })
     .then(()=>res.send("OK"))
     .catch((err)=>res.status(400).send(err.message));
 }

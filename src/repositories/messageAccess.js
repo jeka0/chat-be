@@ -8,7 +8,7 @@ async function createMessage(message){
 async function getAllMessages(){
     return await messageRep.find({
          relations:['user'],
-         order: {id: 'DESC'}
+         order: {datetime: 'DESC'}
     });
 }
 
@@ -27,10 +27,11 @@ async function deleteMessage(id){
     });
 }
 
-async function updateMessage(id, data){
-    return await messageRep.update({
-        id
-    }, data)
+async function updateMessage(prevData, data){
+    return await messageRep.save({
+        ...prevData,
+        ...data
+    })
 }
 
 async function getRange(skip, take){
@@ -38,7 +39,7 @@ async function getRange(skip, take){
         skip,
         take,
         relations:['user'],
-        order: {id: 'DESC'}
+        order: {datetime: 'DESC'}
     });
 
     return {

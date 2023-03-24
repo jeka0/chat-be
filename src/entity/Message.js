@@ -11,7 +11,7 @@ module.exports = new EntitySchema({
             type: "text"
         },
         datetime: {
-            type: "date"
+            type: "timestamp"
         },
     },
     relations: {

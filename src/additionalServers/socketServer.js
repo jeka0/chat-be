@@ -1,6 +1,6 @@
 const server = require('http').createServer();
 const { checkSocketAuth } = require('../middlewares/checkAuth');
-const { createMessage } = require('../services/messageService');
+const { createMessage, deleteMessage, updateMessage } = require('../services/messageService');
 const { checkMessage } = require('../middlewares/messageValidation');
 const io = require("socket.io")(server, {
     cors: {
@@ -11,12 +11,27 @@ const io = require("socket.io")(server, {
 io.use(checkSocketAuth);
 
 io.on('connection', client => {
-  console.log("user connected");
+  console.log(`user ${client.userId} connected`);
 
   client.on("message", ({ message }) =>{
     createMessage(client.userId, { message }).then((savedMessage)=>{
-        console.log(message)
         io.emit("message", savedMessage);
+    })
+  });
+
+  client.on("update", ({ message, id }) =>{
+    updateMessage(id, client.userId, { message }).then((updatedMessage)=>{
+      io.emit("update", updatedMessage);
+    }).catch(err=>{
+      client.emit("error", err);
+    });
+  });
+
+  client.on("delete", (id) =>{
+    deleteMessage(id, client.userId).then(()=>{
+        io.emit("delete", id);
+    }).catch(err=>{
+      client.emit("error", err);
     })
   });
 
@@ -27,7 +42,7 @@ io.on('connection', client => {
   })
 
   client.on("disconnect", () => {
-    console.log("User disconnected");
+    console.log(`User ${client.userId} disconnected`);
   });
 
 });

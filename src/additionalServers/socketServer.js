@@ -11,8 +11,6 @@ const io = require("socket.io")(server, {
 io.use(checkSocketAuth);
 
 io.on('connection', client => {
-  console.log(`user ${client.userId} connected`);
-
   client.on("message", ({ message }) =>{
     createMessage(client.userId, { message }).then((savedMessage)=>{
         io.emit("message", savedMessage);
@@ -40,11 +38,6 @@ io.on('connection', client => {
   client.on('error', err=>{
     client.emit("error", err);
   })
-
-  client.on("disconnect", () => {
-    console.log(`User ${client.userId} disconnected`);
-  });
-
 });
 
 module.exports = server;
